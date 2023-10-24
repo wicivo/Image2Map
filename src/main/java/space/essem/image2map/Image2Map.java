@@ -95,7 +95,7 @@ public class Image2Map implements ModInitializer {
 
         getImage(input).orTimeout(60, TimeUnit.SECONDS).handleAsync((image, ex) -> {
             if (image == null || ex != null) {
-                source.sendFeedback(() -> Text.literal("That doesn't seem to be a valid image!"), false);
+                source.sendFeedback(() -> Text.literal("Это не похоже на действительное изображение.!"), false);
             }
 
             if (GuiHelpers.getCurrentGui(source.getPlayer()) instanceof PreviewGui previewGui) {
@@ -130,7 +130,7 @@ public class Image2Map implements ModInitializer {
                 return DitherMode.NONE;
             else if (string.equalsIgnoreCase("DITHER") || string.equalsIgnoreCase("FLOYD"))
                 return DitherMode.FLOYD;
-            throw new IllegalArgumentException("invalid dither mode");
+            throw new IllegalArgumentException("Недопустимый режим дизеринга");
         }
     }
 
@@ -164,16 +164,16 @@ public class Image2Map implements ModInitializer {
         try {
             mode = DitherMode.fromString(modeStr);
         } catch (IllegalArgumentException e) {
-            throw new SimpleCommandExceptionType(() -> "Invalid dither mode '" + modeStr + "'").create();
+            throw new SimpleCommandExceptionType(() -> "Недопустимый режим дизеринга '" + modeStr + "'").create();
         }
 
         String input = StringArgumentType.getString(context, "path");
 
-        source.sendFeedback(() -> Text.literal("Getting image..."), false);
+        source.sendFeedback(() -> Text.literal("Получение изображения..."), false);
 
         getImage(input).orTimeout(60, TimeUnit.SECONDS).handleAsync((image, ex) -> {
             if (image == null || ex != null) {
-                source.sendFeedback(() -> Text.literal("That doesn't seem to be a valid image!"), false);
+                source.sendFeedback(() -> Text.literal("Это не похоже на действительное изображение.!"), false);
             }
 
             int width;
@@ -189,12 +189,12 @@ public class Image2Map implements ModInitializer {
 
             int finalHeight = height;
             int finalWidth = width;
-            source.sendFeedback(() -> Text.literal("Converting into maps..."), false);
+            source.sendFeedback(() -> Text.literal("Преобразование в карту..."), false);
 
             CompletableFuture.supplyAsync(() -> MapRenderer.render(image, mode, finalWidth, finalHeight)).thenAcceptAsync(mapImage -> {
                 var items = MapRenderer.toVanillaItems(mapImage, source.getWorld(), input);
                 giveToPlayer(player, items, input, finalWidth, finalHeight);
-                source.sendFeedback(() -> Text.literal("Done!"), false);
+                source.sendFeedback(() -> Text.literal("Готово!"), false);
             }, source.getServer());
             return null;
         }, source.getServer());
